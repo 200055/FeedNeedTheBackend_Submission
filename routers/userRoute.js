@@ -40,6 +40,30 @@ router.post("/user/insert", (req, res) => {
 })
 
 
+// login
+router.post("/user/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    user.findOne({ email: email })
+        .then((user_data) => {
+            if (user_data == null) {
+                res.json({ msg: "Invalid Credentials" })
+                return;
+            }
+            bcryptjs.compare(password, user_data.password, (e, result) => {
+                if (result == false) {
+                    res.json({ msg: "Invalid Credentials" });
+                    return;
+                }
+                //creates token for logged in users
+                // this token stores logged in user id
+                const token = jwt.sign({ userId: user_data._id }, "##0a9ajdjd92saSda@342!2#$90user"); // secret key as extra auth (database_signature)
+                res.json({ msg: "Success", token: token });
+            })
+        })
+        .catch();
+})
+
 
 
 
