@@ -80,6 +80,67 @@ router.get("/user/profile", auth.userGuard, upload.single('picture'), (req, res)
     })
 })
 
+//User update route
+router.put("/user/update", auth.userGuard, upload.single('picture'), (req, res) => {
+    const id = req.userInfo._id;
+    const firstname = req.body.firstname;
+    const lastname = req.body.lastname;
+    const username = req.body.username;
+    const phone = req.body.phone;
+    const address = req.body.address;
+
+    const password = req.body.password;
+    const email = req.body.email;
+    const dob = req.body.dob;
+    const donation_point = req.body.donation_point
+    console.log(req.file)
+    if (req.file == undefined) {
+        user.updateOne({
+            _id: id
+        }, {
+
+            password: password,
+            email: email,
+            firstname: firstname,
+            lastname: lastname,
+            phone: phone,
+            username: username,
+            address: address,
+            phone: phone,
+            dob: dob,
+            donation_point: donation_point,
+        })
+            .then(() => {
+                res.json({ message: "updated sucessfully ajsbdj" })
+            })
+            .catch((e) => {
+                res.json({ message: "invalid" })
+            })
+    } else {
+        user.updateOne({
+            _id: id
+        }, {
+            firstname: firstname,
+            lastname: lastname,
+            phone: phone,
+            username: username,
+            address: address,
+
+            password: password,
+            email: email,
+            dob: dob,
+            picture: req.file.filename,
+            donation_point: donation_point,
+        })
+            .then(() => {
+                res.json({ message: "updated sucessfully" })
+            })
+            .catch((e) => {
+                res.json({ message: "invalid" })
+            })
+    }
+})
+
 
 
 module.exports = router;
