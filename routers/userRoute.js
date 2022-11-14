@@ -64,6 +64,21 @@ router.post("/user/login", (req, res) => {
         .catch();
 })
 
+// view profile
+router.get("/user/profile", auth.userGuard, upload.single('picture'), (req, res) => {
+    res.json({
+        picture: req.userInfo.picture,
+        firstname: req.userInfo.firstname,
+        lastname: req.userInfo.lastname,
+        username: req.userInfo.username,
+        email: req.userInfo.email,
+        phone: req.userInfo.phone,
+        address: req.userInfo.address,
+        dob: req.userInfo.dob,
+        donation_point: req.userInfo.donation_point,
+
+    })
+})
 
 
 
