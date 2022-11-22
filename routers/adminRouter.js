@@ -49,6 +49,32 @@ router.post('/admin/register',(req,res)=>{
 })
 
 
+// for admin login
+router.post('/admin/login',(req,res)=>{
+  const email = req.body.email;
+  const password = req.body.password;
+  admin.findOne({email:email})
+  .then((a_data)=>{
+      if (a_data == null){
+          return res.json({msg: "Invalid Credentials"});
+      }    
+      bcryptjs.compare(password, a_data.password, (e,result)=>{
+          if (result == false){ 
+            return res.status(201).json({msg:"Invalid Credentials"})
+              // return res.json({msg:"Invalid Credentials"})
+          }
+          
+          // creates token for logged in user
+          // The token stores the logged in user id
+          const token = jwt.sign({adminId : a_data._id}, "##0a9ajdjd92saSda@342!2#$90admin");
+          res.json({token : token});
+
+      })
+  })
+  .catch()
+
+})
+
 
 
 module.exports = router;
