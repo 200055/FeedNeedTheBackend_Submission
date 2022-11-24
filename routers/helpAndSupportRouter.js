@@ -33,6 +33,17 @@ router.post('/contact',auth.staff_guard, (req,res)=>{
 
 })
 
+// view contact us 
+router.get('/contact', async (req,res)=>{
+    const contact_details = await contact.find({})
+    if (!contact_details) {
+        res.status(500).json({success: false});
+      } else {
+        res.status(201).json({success: true, data: contact_details });
+      }
+
+})
+
 
 
 module.exports = router;
