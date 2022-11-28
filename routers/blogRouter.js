@@ -51,5 +51,15 @@ router.get('/blog', async (req,res)=>{
       }
 })
 
+router.get('/blog/:id', async (req,res)=>{
+    const blog_details = await blog.findOne({_id : req.params.id})
+    if (!blog_details) {
+        res.status(500).json({success: false});
+      } else {
+        res.status(201).json({success: true, data: blog_details });
+      }
+})
+
+
 
 module.exports = router;
