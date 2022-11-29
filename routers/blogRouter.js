@@ -150,4 +150,16 @@ router.put('/blog/update/:id', auth.admin_guard,upload.fields([{name:'blog_image
     }
 })
 
+//router to delete blog
+router.delete('/blog/:id',auth.admin_guard, (req,res)=>{
+    const id = req.params.id;
+    blog.deleteOne({_id: id})
+    .then(()=>{
+        res.json({success:true, msg: "blog deleted successfully"})
+    })
+    .catch((e)=>{
+        res.json(e)
+    })
+
+})
 module.exports = router;
