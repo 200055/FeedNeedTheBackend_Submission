@@ -33,4 +33,13 @@ router.post('/partner/insert',auth.admin_guard,upload.fields([{name:'partner_ima
     })
 })
 
+router.get('/partner', async (req,res)=>{
+    const partner_details = await partner.find({})
+    if (!partner_details) {
+        res.status(500).json({success: false});
+      } else {
+        res.status(201).json( partner_details );
+      }
+})
+
 module.exports = router;
