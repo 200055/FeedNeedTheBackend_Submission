@@ -42,4 +42,13 @@ router.get('/partner', async (req,res)=>{
       }
 })
 
+router.get('/partner/:id', async (req,res)=>{
+    const partner_details = await partner.findOne({_id : req.params.id})
+    if (!partner_details) {
+        res.status(500).json({success: false});
+      } else {
+        res.status(201).json({success: true, data: partner_details });
+      }
+})
+
 module.exports = router;
