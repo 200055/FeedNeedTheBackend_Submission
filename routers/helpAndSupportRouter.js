@@ -69,4 +69,25 @@ router.put('/contact/:id', auth.admin_guard, (req,res)=>{
 })
 
 
+// *******visit us on maps*********
+// map us post
+router.post('/map',auth.admin_guard, (req,res)=>{
+    const lat = req.body.lat;
+    const long = req.body.long;
+
+    const data = new map({
+        lat: lat,
+        long: long,
+    })
+
+    data.save()
+    .then(()=>{
+        res.json({success:true, msg:"Inserted"})}  
+    )
+    .catch((e)=>{
+        res.json({msg:"Failed"})
+    })
+
+})
+
 module.exports = router;
