@@ -102,4 +102,25 @@ router.get('/map', async (req,res)=>{
 
 })
 
+
+// view one map us 
+router.put('/map/:id', auth.admin_guard, (req,res)=>{
+    const  _id = req.params.id;
+    const lat = req.body.lat;
+    const long = req.body.long;
+
+        map.updateOne({
+            _id: _id
+        },{
+            lat :  lat,
+            long : long,
+        })
+        .then(()=>{
+            res.json({success:true, msg:"Updated"})}  
+        )
+        .catch((e)=>{
+            res.json({msg:"Failed to update map"})
+        })
+})
+
 module.exports = router;
