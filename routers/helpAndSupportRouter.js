@@ -90,4 +90,16 @@ router.post('/map',auth.admin_guard, (req,res)=>{
 
 })
 
+
+// view map us 
+router.get('/map', async (req,res)=>{
+    const map_details = await map.find({})
+    if (!map_details) {
+        res.status(500).json({success: false});
+      } else {
+        res.status(201).json({success: true, data: map_details });
+      }
+
+})
+
 module.exports = router;
