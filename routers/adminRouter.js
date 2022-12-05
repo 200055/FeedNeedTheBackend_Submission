@@ -142,6 +142,15 @@ router.post("/admin/changepassword", auth.admin_guard, async (req, res) => {
 });
 
 
+// dashboard for admin
+router.get('/admin/dashboard',auth.admin_guard,(req,res)=>{
+  res.json({
+      username : req.adminInfo.username,
+      email : req.adminInfo.email
+  })
+})
+
+
 module.exports = router;
 
 
