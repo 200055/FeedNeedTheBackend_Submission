@@ -141,6 +141,71 @@ router.put("/user/update", auth.userGuard, upload.single('picture'), (req, res) 
     }
 })
 
+router.post("/user/changepassword", auth.userGuard, async (req, res) => {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    const userId = req.userInfo._id;
+    console.log(userId);
+    let errors = [];
+
+    //Check required fields
+    // if (!currentPassword || !newPassword || !confirmNewPassword) {
+    //   // errors.push({ msg: "Please fill in all fields." });
+    //   res.send( {msg:"Please fill in all fields"});
+    // }
+
+    //Check passwords match
+    if (newPassword !== confirmNewPassword) {
+        // errors.push({ msg: "New passwords do not match." });
+        res.send({ msg: "New passwords do not match" });
+        return;
+    }
+
+    //Check password length
+    if (newPassword.length < 6 || confirmNewPassword.length < 6) {
+        // errors.push({ msg: "Password should be at least six characters." });
+        res.send({ msg: "Password should be at least six characters" });
+        return;
+    }
+    if (currentPassword == newPassword) {
+        res.send({ msg: "New Password Cannot Be Same To Old" });
+        return;
+    }
+
+    if (errors.length > 0) {
+        res.send({ msg: "Field cannot be empty" });
+        return;
+    } else {
+        //VALIDATION PASSED
+        //Ensure current password submitted matches
+
+        user.findOne({ _id: userId }).then(async (user) => {
+            //encrypt newly submitted password
+            // async-await syntax
+            const isMatch = await bcryptjs.compare(currentPassword, user.password);
+            console.log(await bcryptjs.compare(currentPassword, user.password))
+            console.log(user.password)
+            if (isMatch) {
+                console.log(user.password);
+                //Update password for user with new password
+                bcryptjs.genSalt(10, (err, salt) =>
+                    bcryptjs.hash(newPassword, salt, (err, hash) => {
+                        if (err) throw err;
+                        user.password = hash;
+                        user.save();
+                    })
+                );
+                res.send({ msg: "Password successfully updated!" });
+                return;
+            }
+            else {
+                //Password does not match
+                res.send({ msg: "Current password is not a match" })
+                return;
+                // errors.push({ msg: "Current password is not a match." });
+            }
+        });
+    }
+});
 
 
 module.exports = router;
