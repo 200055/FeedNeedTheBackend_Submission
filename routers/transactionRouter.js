@@ -37,6 +37,23 @@ router.post("/user/send_transaction",auth.userGuard, (req,res)=>{
     })
 })
 
+router.put("/user/donation_point",auth.userGuard,(req,res)=>{
+  const donation_point = req.body.donation_point
+  const user_id = req.userInfo._id;
+  user.updateOne({
+      _id: user_id
+  },
+  {
+      donation_point : donation_point
+  })
+  .then(()=>{
+      res.json({success:true, msg:"Updated"})}  
+  )
+  .catch((e)=>{
+      res.json({msg:"Failed to update donation point"})
+  })
+})
+
 
 
 module.exports = router;
