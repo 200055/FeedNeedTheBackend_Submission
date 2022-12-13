@@ -69,6 +69,42 @@ router.post('/user/send-otp', async (req, res) => {
   });
 });
 
+// Verify OTP route
+router.post('/user/verify-otp', async (req, res) => {
+    const email = req.body.email;
+    const otp = req.body.otp;
+  
+    // Check if the email is in the database
+    const User = await user.findOne({ email: email });
+    if (!User) {
+        return res.status(404).send({ message: 'User not found' });
+    }
+
+    // Check if the OTP is expired
+    if (User.expiresAt < Date.now()) {
+        return res.status(400).send({ message: 'OTP expired' });
+    }
+
+    console.log(User.otp);
+    // Check if the OTP is correct
+    if (!User.otp) {
+        return res.status(400).send({ message: 'Invalid OTP' });
+    }
+    const isMatch = await bcryptjs.compare(otp, User.otp);
+    
+    if (!isMatch) {
+        return res.status(400).send({ message: 'Invalid OTP' });
+    }
+
+    // If the OTP is correct, remove it from the user's record
+    User.otp = undefined;
+    User.expiresAt = undefined;
+    User.otpVerified = true;
+    await User.save();
+    
+
+    res.send({ message: 'OTP verified successfully' });
+});
 
 // register
 router.post("/user/insert", (req, res) => {
