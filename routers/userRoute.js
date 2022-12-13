@@ -7,6 +7,69 @@ const auth = require('../auth/auth');
 const upload = require('../fileupload/fileupload');
 const nodemailer = require('nodemailer');
 
+
+// Set up the Nodemailer transport
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false, // use TLS
+    auth: {
+        user: 'chet87@ethereal.email',
+        pass: 'N64kAdgxhNEj2VGAA1'
+    }
+  });
+  
+  // Generate a random OTP
+  const randomNumber = require('random-number-csprng');
+  
+  async function generateOTP() {
+    const otp = await randomNumber(10000, 99999);
+    return otp;
+  }
+
+// Send OTP email route
+router.post('/user/send-otp', async (req, res) => {
+  const email = req.body.email;
+
+  // Check if the email is in the database
+  const User = await user.findOne({ email: email });
+  if (!User) {
+    return res.status(404).send({ message: 'User not found' });
+  }
+
+  // Generate and save the OTP
+  const otp = await generateOTP();
+
+  // Encrypt the OTP using bcrypt
+  const salt = await bcryptjs.genSalt(10);
+  const encryptedOTP = await bcryptjs.hash(otp.toString(), salt);
+  User.otp = encryptedOTP;
+
+  // Set the expiration time for the OTP
+  const expiresInMinutes = 15;
+  User.expiresAt = Date.now() + expiresInMinutes * 60 * 1000;
+  await User.save();
+
+  // Send the OTP in an email
+  const mailOptions = {
+    from: 'sender@example.com',
+    to: email,
+    subject: 'Feed The Need Reset Password',
+    text: `Your OTP to reset Feed The Need Password is: ${otp}`
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+      res.status(500).send({ message: 'Error sending email' });
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.send({ message: 'OTP sent successfully' });
+    }
+  });
+});
+
+
 // register
 router.post("/user/insert", (req, res) => {
     const email = req.body.email;
