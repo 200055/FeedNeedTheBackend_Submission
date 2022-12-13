@@ -106,6 +106,41 @@ router.post('/user/verify-otp', async (req, res) => {
     res.send({ message: 'OTP verified successfully' });
 });
 
+// Reset password route
+router.post('/user/reset-password', async (req, res) => {
+    // Find the user in the database
+    const email = req.body.email;
+    const User = await user.findOne({ email: email });
+    // Check if the OTP has been verified
+    if (!User.otpVerified) {
+        return res.status(400).send({ message: 'OTP not verified' });
+    }
+
+    // Reset the OTP verification flag
+    User.otpVerified = false;
+
+    // Get the new password from the request body
+    const newPassword = req.body.newPassword;
+    if (!newPassword) {
+        return res.status(400).send({ message: 'New password required' });
+    }
+
+    
+    if (!User) {
+        return res.status(404).send({ message: 'User not found' });
+    }
+
+    // Hash the new password using bcrypt
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+
+    // Update the user's password in the database
+    User.password = hashedPassword;
+    await User.save();
+
+    res.send({ message: 'Password reset successfully' });
+  
+});    
 // register
 router.post("/user/insert", (req, res) => {
     const email = req.body.email;
