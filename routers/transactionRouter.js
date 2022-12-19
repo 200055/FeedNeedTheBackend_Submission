@@ -54,6 +54,21 @@ router.put("/user/donation_point",auth.userGuard,(req,res)=>{
   })
 })
 
+//view leadearboard
+router.get("/leaderboard", async (req, res) => {
+  await user.find().sort({donation_point: -1})
+    .then((users) => {
+      res.status(201).json({
+        success: true,
+        data: users,
+      });
+    })
+    .catch((e) => {
+      res.json({
+        msg: e,
+      });
+    });
+});
 
 
 module.exports = router;
