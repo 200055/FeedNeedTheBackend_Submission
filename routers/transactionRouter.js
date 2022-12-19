@@ -70,5 +70,23 @@ router.get("/leaderboard", async (req, res) => {
     });
 });
 
+//view all transaction on the system
+router.get("/all_transaction",async(req,res)=>{ 
+  await transaction.find().sort({created_at:-1})
+  .populate({
+      path: "user_id"
+  })
+  .then((transaction) => {
+      res.status(201).json({
+        success: true,
+        data: transaction,
+      });
+    })
+    .catch((e) => {
+      res.json({
+        msg: e,
+      });
+    });
+})
 
 module.exports = router;
