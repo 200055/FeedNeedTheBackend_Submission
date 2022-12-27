@@ -7,7 +7,6 @@ const auth = require('../auth/auth');
 const upload = require('../fileupload/fileupload');
 const nodemailer = require('nodemailer');
 
-
 // Set up the Nodemailer transport
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
@@ -141,6 +140,7 @@ router.post('/user/reset-password', async (req, res) => {
     res.send({ message: 'Password reset successfully' });
   
 });    
+
 // register
 router.post("/user/insert", (req, res) => {
     const email = req.body.email;
@@ -172,7 +172,6 @@ router.post("/user/insert", (req, res) => {
         })
         .catch();
 })
-
 
 // login
 router.post("/user/login", (req, res) => {
@@ -340,6 +339,7 @@ router.post("/user/changepassword", auth.userGuard, async (req, res) => {
         });
     }
 });
+
 
 
 module.exports = router;
