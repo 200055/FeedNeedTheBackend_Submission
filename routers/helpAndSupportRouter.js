@@ -32,7 +32,6 @@ router.post('/contact',auth.staff_guard, (req,res)=>{
     })
 
 })
-
 // view contact us 
 router.get('/contact', async (req,res)=>{
     const contact_details = await contact.find({})
@@ -43,7 +42,6 @@ router.get('/contact', async (req,res)=>{
       }
 
 })
-
 // view one contact us 
 router.put('/contact/:id', auth.admin_guard, (req,res)=>{
     const  _id = req.params.id;
@@ -69,6 +67,7 @@ router.put('/contact/:id', auth.admin_guard, (req,res)=>{
 })
 
 
+
 // *******visit us on maps*********
 // map us post
 router.post('/map',auth.admin_guard, (req,res)=>{
@@ -89,8 +88,6 @@ router.post('/map',auth.admin_guard, (req,res)=>{
     })
 
 })
-
-
 // view map us 
 router.get('/map', async (req,res)=>{
     const map_details = await map.find({})
@@ -101,8 +98,6 @@ router.get('/map', async (req,res)=>{
       }
 
 })
-
-
 // view one map us 
 router.put('/map/:id', auth.admin_guard, (req,res)=>{
     const  _id = req.params.id;
@@ -122,5 +117,8 @@ router.put('/map/:id', auth.admin_guard, (req,res)=>{
             res.json({msg:"Failed to update map"})
         })
 })
+
+
+
 
 module.exports = router;
