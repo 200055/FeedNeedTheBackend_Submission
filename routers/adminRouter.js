@@ -149,6 +149,16 @@ router.get('/admin/dashboard',auth.admin_guard,(req,res)=>{
       email : req.adminInfo.email
   })
 })
+//view all users
+router.get('/users', async (req,res)=>{
+  const user_details = await user.find({})
+  if (!user_details) {
+      res.status(500).json({success: false});
+    } else {
+      res.status(201).json(user_details ); 
+    }
+})
+
 
 
 module.exports = router;
